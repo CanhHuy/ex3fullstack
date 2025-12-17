@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quản lý Người dùng</title>
 
-    <!-- React CDN -->
     <script
       crossorigin
       src="https://unpkg.com/react@18/umd/react.development.js"
@@ -43,7 +42,6 @@
         color: #333;
       }
 
-      /* Search Bar */
       .search-bar {
         margin-bottom: 15px;
       }
@@ -61,7 +59,6 @@
         border-color: #4caf50;
       }
 
-      /* Buttons */
       button {
         padding: 10px 20px;
         margin: 5px 4px;
@@ -102,7 +99,6 @@
         color: white;
       }
 
-      /* Table */
       .table-container {
         overflow-x: auto;
       }
@@ -140,7 +136,6 @@
         margin: 2px;
       }
 
-      /* Pagination */
       .pagination {
         display: flex;
         justify-content: space-between;
@@ -161,7 +156,6 @@
         min-width: 80px;
       }
 
-      /* Modal */
       .modal-overlay {
         position: fixed;
         top: 0;
@@ -230,7 +224,6 @@
         color: #666;
       }
 
-      /* Responsive */
       @media (max-width: 768px) {
         body {
           padding: 10px;
@@ -285,20 +278,15 @@
         const [editingUser, setEditingUser] = useState(null);
         const [loading, setLoading] = useState(false);
 
-        // Fetch users
         const fetchUsers = async () => {
         setLoading(true);
-        const url = `http://localhost:3001/api/users?page=${page}&limit=${limit}&search=${search}`;
-
+        const url = `https://ex3fullstack.onrender.com/api/users?page=${page}&limit=${limit}&search=${search}`;
         try {
           const response = await fetch(url);
           const data = await response.json();
-
-
           setUsers(data.data);
           setTotal(data.total);
           setTotalPages(data.totalPages);
-
 
         } catch (err) {
           console.error("Fetch error:", err);
@@ -307,11 +295,11 @@
           setLoading(false);
         }
       };
-        // Delete user
+        
         const deleteUser = async (id) => {
           try {
             const response = await fetch(
-              `http://localhost:3001/api/users/${id}`,
+              `https://ex3fullstack.onrender.com/api/users/${id}`,
               {
                 method: "DELETE",
               }
@@ -330,13 +318,11 @@
           }
         };
 
-        // Handle limit change - reset page về 1
         const handleLimitChange = (newLimit) => {
           setLimit(newLimit);
           setPage(1);
         };
 
-        // useEffect: Gọi API khi page, limit, search thay đổi
         useEffect(() => {
           fetchUsers();
         }, [page, limit, search]);
@@ -401,7 +387,7 @@
         useEffect(() => {
           const timer = setTimeout(() => {
             onChange(searchInput);
-          }, 200); // Đợi 200ms sau khi user ngừng gõ
+          }, 200); 
 
           return () => clearTimeout(timer);
         }, [searchInput]);
@@ -476,7 +462,6 @@
         );
       }
 
-      // Component Pagination
       function Pagination({
         page,
         totalPages,
@@ -519,7 +504,6 @@
         );
       }
 
-      // Component UserModal
       function UserModal({ user, onClose, onSave }) {
         const [formData, setFormData] = useState(
           user || { name: "", age: "", email: "", address: "" }
@@ -571,8 +555,8 @@
           };
 
           const url = user
-            ? `http://localhost:3001/api/users/${user._id}`
-            : `http://localhost:3001/api/users`;
+            ? `https://ex3fullstack.onrender.com/api/users/${user._id}`
+            : `https://ex3fullstack.onrender.com/api/users`;
           const method = user ? "PUT" : "POST";
 
           try {

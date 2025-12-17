@@ -28,9 +28,6 @@ mongoose
   .catch(err => {
     console.error(' LỖI KẾT NỐI MONGODB:', err.message);
     console.error('Kiểm tra lại:');
-    console.error('- MSSV và PASSWORD có đúng không?');
-    console.error('- Network Access đã cho phép IP chưa?');
-    console.error('- User đã được tạo trong Database Access chưa?');
   });
   app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
