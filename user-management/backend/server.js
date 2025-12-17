@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
+const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -22,7 +23,6 @@ mongoose
       console.log('='.repeat(50));
     });
   })
-
   .catch(err => {
     console.error(' LỖI KẾT NỐI MONGODB:', err.message);
     console.error('Kiểm tra lại:');
@@ -30,10 +30,9 @@ mongoose
     console.error('- Network Access đã cho phép IP chưa?');
     console.error('- User đã được tạo trong Database Access chưa?');
   });
-// Middleware
-app.use(cors());
-app.use(express.json());
-
+  app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 //  USER SCHEMA 
 const userSchema = new mongoose.Schema({
   name: {
@@ -131,8 +130,6 @@ app.get('/api/users', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
     const search = req.query.search || '';
-    
-    // ✅ Giới hạn page và limit
     const validPage = Math.max(1, page);
     const validLimit = Math.min(Math.max(1, limit), 100);
     
@@ -143,10 +140,7 @@ app.get('/api/users', async (req, res) => {
         { address: { $regex: search, $options: 'i' } }
       ]
     } : {};
-
     const skip = (validPage - 1) * validLimit;
-    
-    // ✅ PROMISE.ALL - QUERY SONG SONG
     const [users, total] = await Promise.all([
       User.find(filter).skip(skip).limit(validLimit),
       User.countDocuments(filter)
