@@ -1,16 +1,21 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3001;
+const mongoURI = process.env.MONGODB_URI; 
 const MSSV = "20225334"; 
 const COLLECTION_NAME = "users";
-// Middleware
 app.use(cors());
 app.use(express.json());
-// Kết nối MongoDB với username là MSSV, password là MSSV, dbname là it4409
+if (!mongoURI) {
+  console.error("LỖI: Chưa cấu hình MONGODB_URI trong biến môi trường!");
+  process.exit(1);
+}
+
 mongoose
-  .connect("mongodb+srv://20225334:20225334@it4409.b12oyyb.mongodb.net/it4409")
+  .connect(mongoURI)
   .then(() => {
     console.log('='.repeat(50));
     console.log(' ĐÃ KẾT NỐI MONGODB THÀNH CÔNG');
@@ -19,7 +24,8 @@ mongoose
     console.log(` Collection: ${COLLECTION_NAME}`);
     console.log(` Database: userdb`);
     console.log('='.repeat(50));
-  app.listen(PORT, () => {
+    
+    app.listen(PORT, () => {
       console.log(` Server đang chạy tại: http://localhost:${PORT}`);
       console.log(` Test API tại: http://localhost:${PORT}/api/users`);
       console.log('='.repeat(50));
@@ -29,10 +35,8 @@ mongoose
     console.error(' LỖI KẾT NỐI MONGODB:', err.message);
     console.error('Kiểm tra lại:');
   });
-  app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-//  USER SCHEMA 
+
+// USER SCHEMA 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -72,7 +76,7 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-//  ERROR HANDLING
+// ERROR HANDLING
 const errorHandler = (err, req, res, next) => {
   console.error(err.stack);
 
@@ -104,8 +108,6 @@ const errorHandler = (err, req, res, next) => {
     message: err.message || 'Lỗi server'
   });
 };
-
-// CRUD API ROUTES 
 
 // CREATE 
 app.post('/api/users', async (req, res, next) => {
@@ -206,8 +208,6 @@ app.delete('/api/users/:id', async (req, res, next) => {
     next(error);
   }
 });
-
-// Route trang chủ
 app.get('/', (req, res) => {
   res.json({
     message: 'User Management API',
@@ -223,8 +223,4 @@ app.get('/', (req, res) => {
       'DELETE /api/users/:id': 'Xóa user'
     }
   });
-});
-// Start server
-app.listen(3001, () => {
-  console.log("Server running on http://localhost:3001");
 });
